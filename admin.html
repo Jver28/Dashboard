@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin | DataRest</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+        :root { 
+            --bg-color: #f0f2f5; 
+            --surface-color: #ffffff; 
+            --border-color: #dee2e6;
+            --sidebar-bg: #1f2937;
+            --sidebar-link: #9ca3af;
+            --sidebar-link-hover: #ffffff;
+            --sidebar-link-active-bg: #374151;
+            --text-primary: #212529; 
+            --text-secondary: #6c757d; 
+            --accent-primary: #007bff;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: var(--bg-color); 
+            color: var(--text-primary); 
+        }
+
+        /* --- LAYOUT CON SIDEBAR --- */
+        .layout-container { display: flex; }
+        .sidebar {
+            width: 260px; background-color: var(--sidebar-bg); color: var(--sidebar-link); height: 100vh;
+            position: fixed; top: 0; left: 0; padding: 1.5rem; display: flex; flex-direction: column; z-index: 1001;
+        }
+        .sidebar .logo { font-size: 1.5rem; font-weight: 700; color: var(--sidebar-link-hover); margin-bottom: 2.5rem; text-align: center; }
+        .sidebar .logo i { color: var(--accent-primary); }
+        .sidebar .nav-menu { flex-grow: 1; list-style: none; padding: 0; }
+        .sidebar .nav-menu a {
+            display: flex; align-items: center; padding: 0.9rem 1rem; color: var(--sidebar-link); text-decoration: none;
+            border-radius: 8px; margin-bottom: 0.5rem; font-weight: 500; transition: background-color 0.2s, color 0.2s;
+        }
+        .sidebar .nav-menu a:hover { background-color: var(--sidebar-link-active-bg); color: var(--sidebar-link-hover); }
+        .sidebar .nav-menu a.active { background-color: var(--sidebar-link-active-bg); color: var(--sidebar-link-hover); font-weight: 600; }
+        .sidebar .nav-menu i { margin-right: 1rem; font-size: 1.2rem; }
+        .sidebar .logout-button {
+            display: flex; align-items: center; justify-content: center; padding: 0.9rem 1rem; color: var(--sidebar-link); text-decoration: none;
+            border-radius: 8px; font-weight: 500; cursor: pointer; border: 1px solid var(--sidebar-link); transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+        }
+        .sidebar .logout-button:hover { background-color: #dc3545; border-color: #dc3545; color: var(--sidebar-link-hover); }
+        .sidebar .logout-button i { margin-right: 0.5rem; }
+
+        .main-content { margin-left: 260px; width: calc(100% - 260px); padding: 2rem; }
+        
+        /* --- ESTILOS DE CONTENIDO --- */
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+        .button { padding: 0.7rem 1.2rem; border: none; background-color: var(--accent-primary); color: #fff; border-radius: 8px; font-size: 0.9rem; font-weight: 600; cursor: pointer; }
+        .content-block { background-color: var(--surface-color); padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+        .table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+        .table th, .table td { padding: 1rem; text-align: left; border-bottom: 1px solid var(--border-color); }
+        .action-buttons button { background: none; border: none; cursor: pointer; font-size: 1.2rem; margin-right: 0.5rem; }
+        .bi-trash-fill { color: #dc3545; }
+        .bi-pencil-fill { color: #ffc107; }
+        .bi-key-fill { color: #0d6efd; }
+        #addUserForm { margin-top: 1.5rem; border-top: 1px solid var(--border-color); padding-top: 1.5rem; display: none; }
+        .input-group { margin-bottom: 1rem; }
+        label { display: block; font-weight: 500; margin-bottom: 0.5rem; }
+        input, select { width: 100%; padding: 0.8rem; border: 1px solid var(--border-color); border-radius: 8px; }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 1000;}
+        .modal-content { background: var(--surface-color); padding: 2rem; border-radius: 12px; width: 90%; max-width: 500px; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+        .close-button { background: none; border: none; font-size: 1.5rem; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="layout-container">
+        <nav class="sidebar">
+            <div>
+                <div class="logo"><i class="bi bi-shield-lock-fill"></i> Admin</div>
+                <ul class="nav-menu">
+                    <li><a href="dashboard_final.html"><i class="bi bi-bar-chart-line-fill"></i>Dashboard</a></li>
+                    <li><a href="admin.html" class="active"><i class="bi bi-people-fill"></i>Gestión de Usuarios</a></li>
+                    <li><a href="settings.html"><i class="bi bi-gear-fill"></i>Configuración KPIs</a></li>
+                </ul>
+            </div>
+            <button class="logout-button" id="logoutButton">
+                <i class="bi bi-box-arrow-left"></i>
+                <span>Cerrar Sesión</span>
+            </button>
+        </nav>
+
+        <main class="main-content">
+            <div class="header">
+                <h1>Gestión de Usuarios</h1>
+                <button class="button" id="showFormButton">Añadir Nuevo Usuario</button>
+            </div>
+            <div class="content-block">
+                <form id="addUserForm">
+                    <div class="input-group"><label for="addEmail">Email del Usuario</label><input type="email" id="addEmail" required></div>
+                    <div class="input-group"><label for="addPassword">Contraseña</label><input type="password" id="addPassword" required></div>
+                    <div class="input-group"><label for="addRole">Rol</label><select id="addRole" required><option value="colaborador">Colaborador</option><option value="admin">Administrador</option></select></div>
+                    <button type="submit" class="button">Guardar Usuario</button>
+                </form>
+                <table class="table">
+                    <thead><tr><th>Email</th><th>Rol</th><th>Creado en</th><th>Acciones</th></tr></thead>
+                    <tbody id="user-table-body"></tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <div id="editUserModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header"><h2>Editar Usuario</h2><button class="close-button" id="closeEditModalButton">&times;</button></div>
+            <form id="editUserForm">
+                <input type="hidden" id="editUserId">
+                <div class="input-group"><label for="editEmail">Email</label><input type="email" id="editEmail" required></div>
+                <div class="input-group"><label for="editRole">Rol</label><select id="editRole" required><option value="colaborador">Colaborador</option><option value="admin">Administrador</option></select></div>
+                <button type="submit" class="button">Guardar Cambios</button>
+            </form>
+        </div>
+    </div>
+    <div id="resetPasswordModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header"><h2>Resetear Contraseña</h2><button class="close-button" id="closeResetModalButton">&times;</button></div>
+            <form id="resetPasswordForm">
+                <input type="hidden" id="resetUserId">
+                <div class="input-group"><label for="newPassword">Nueva Contraseña</label><input type="password" id="newPassword" required></div>
+                <button type="submit" class="button">Establecer Nueva Contraseña</button>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- CONFIGURACIÓN Y COMPROBACIONES INICIALES ---
+            // La URL de la API para la gestión de usuarios ahora está escrita directamente aquí.
+            const apiBaseUrl = 'http://localhost:3000/api'; 
+            const authToken = localStorage.getItem('authToken');
+            
+            if (!authToken) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // --- SELECCIÓN DE ELEMENTOS DEL DOM ---
+            const userTableBody = document.getElementById('user-table-body');
+            const addUserForm = document.getElementById('addUserForm');
+            const showFormButton = document.getElementById('showFormButton');
+            const logoutButton = document.getElementById('logoutButton');
+            const editModal = document.getElementById('editUserModal');
+            const editForm = document.getElementById('editUserForm');
+            const closeEditModalButton = document.getElementById('closeEditModalButton');
+            const resetPasswordModal = document.getElementById('resetPasswordModal');
+            const resetPasswordForm = document.getElementById('resetPasswordForm');
+            const closeResetModalButton = document.getElementById('closeResetModalButton');
+
+            // --- FUNCIONES PRINCIPALES (FETCH, RENDER) ---
+            async function fetchUsers() {
+                try {
+                    const response = await fetch(`${apiBaseUrl}/users`, { headers: { 'Authorization': `Bearer ${authToken}` } });
+                    if (response.status === 401 || response.status === 403) {
+                        localStorage.removeItem('authToken');
+                        window.location.href = 'login.html';
+                        return;
+                    }
+                    if (!response.ok) throw new Error('No se pudo cargar la lista de usuarios.');
+                    const users = await response.json();
+                    renderUsers(users);
+                } catch (error) {
+                    console.error(error);
+                    userTableBody.innerHTML = `<tr><td colspan="4" style="color:red;">${error.message}</td></tr>`;
+                }
+            }
+
+            function renderUsers(users) {
+                userTableBody.innerHTML = '';
+                users.forEach(user => {
+                    const userJson = JSON.stringify(user);
+                    const row = `
+                        <tr>
+                            <td>${user.email}</td>
+                            <td>${user.role}</td>
+                            <td>${new Date(user.created_at).toLocaleDateString()}</td>
+                            <td class="action-buttons">
+                                <button title="Resetear Contraseña" onclick='openResetPasswordModal(${user.id})'><i class="bi bi-key-fill"></i></button>
+                                <button title="Editar" onclick='openEditModal(${userJson})'><i class="bi bi-pencil-fill"></i></button>
+                                <button title="Eliminar" onclick="deleteUser(${user.id})"><i class="bi bi-trash-fill"></i></button>
+                            </td>
+                        </tr>
+                    `;
+                    userTableBody.innerHTML += row;
+                });
+            }
+
+            // --- FUNCIONES DE ACCIONES (DELETE, EDIT, RESET) ---
+            window.deleteUser = async (userId) => {
+                if (!confirm('¿Estás seguro de que quieres eliminar a este usuario?')) return;
+                try {
+                    const response = await fetch(`${apiBaseUrl}/users/${userId}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${authToken}` } });
+                    const data = await response.json();
+                    if (!response.ok) throw new Error(data.message);
+                    alert('Usuario eliminado con éxito.');
+                    fetchUsers();
+                } catch (error) { alert(`Error: ${error.message}`); }
+            };
+            
+            window.openEditModal = (user) => {
+                document.getElementById('editUserId').value = user.id;
+                document.getElementById('editEmail').value = user.email;
+                document.getElementById('editRole').value = user.role;
+                editModal.style.display = 'flex';
+            };
+            
+            window.openResetPasswordModal = (userId) => {
+                document.getElementById('resetUserId').value = userId;
+                resetPasswordModal.style.display = 'flex';
+            };
+
+            function closeModal(modalElement) {
+                modalElement.style.display = 'none';
+            }
+
+            // --- EVENT LISTENERS ---
+            logoutButton.addEventListener('click', () => {
+                localStorage.removeItem('authToken');
+                window.location.href = 'login.html';
+            });
+            
+            showFormButton.addEventListener('click', () => {
+                const isVisible = addUserForm.style.display === 'block';
+                addUserForm.style.display = isVisible ? 'none' : 'block';
+                showFormButton.textContent = isVisible ? 'Añadir Nuevo Usuario' : 'Cancelar';
+            });
+
+            addUserForm.addEventListener('submit', async (event) => {
+                event.preventDefault();
+                const email = document.getElementById('addEmail').value;
+                const password = document.getElementById('addPassword').value;
+                const role = document.getElementById('addRole').value;
+                try {
+                    const response = await fetch(`${apiBaseUrl}/users`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${authToken}` },
+                        body: JSON.stringify({ email, password, role })
+                    });
+                    const data = await response.json();
+                    if (!response.ok) throw new Error(data.message);
+                    alert('¡Usuario creado con éxito!');
+                    addUserForm.reset();
+                    addUserForm.style.display = 'none';
+                    showFormButton.textContent = 'Añadir Nuevo Usuario';
+                    fetchUsers();
+                } catch (error) { alert(`Error: ${error.message}`); }
+            });
+
+            editForm.addEventListener('submit', async (event) => {
+                event.preventDefault();
+                const id = document.getElementById('editUserId').value;
+                const email = document.getElementById('editEmail').value;
+                const role = document.getElementById('editRole').value;
+                try {
+                    const response = await fetch(`${apiBaseUrl}/users/${id}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${authToken}` },
+                        body: JSON.stringify({ email, role })
+                    });
+                    const data = await response.json();
+                    if (!response.ok) throw new Error(data.message);
+                    alert('Usuario actualizado con éxito.');
+                    closeModal(editModal);
+                    fetchUsers();
+                } catch (error) { alert(`Error: ${error.message}`); }
+            });
+
+            resetPasswordForm.addEventListener('submit', async (event) => {
+                event.preventDefault();
+                const userId = document.getElementById('resetUserId').value;
+                const newPassword = document.getElementById('newPassword').value;
+                try {
+                    const response = await fetch(`${apiBaseUrl}/users/${userId}/reset-password`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${authToken}` },
+                        body: JSON.stringify({ newPassword })
+                    });
+                    const data = await response.json();
+                    if (!response.ok) throw new Error(data.message);
+                    alert('Contraseña actualizada con éxito.');
+                    resetPasswordForm.reset();
+                    closeModal(resetPasswordModal);
+                } catch (error) { alert(`Error: ${error.message}`); }
+            });
+
+            closeEditModalButton.addEventListener('click', () => closeModal(editModal));
+            closeResetModalButton.addEventListener('click', () => closeModal(resetPasswordModal));
+            
+            window.addEventListener('click', (event) => {
+                if (event.target == editModal) closeModal(editModal);
+                if (event.target == resetPasswordModal) closeModal(resetPasswordModal);
+            });
+
+            // --- CARGA INICIAL ---
+            fetchUsers();
+        });
+    </script>
+</body>
+</html>

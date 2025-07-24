@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Pro | Restaurante</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    
+    <div id="loading-overlay" class="loading-overlay" style="display: none;">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <p id="loading-message">Cargando...</p>
+        </div>
+    </div>
+
+    <nav class="sidebar">
+        <div>
+            <div class="logo"><i class="bi bi-pie-chart-fill"></i> DataRest</div>
+            <div class="nav-menu">
+                <a href="#resumen" class="active"><i class="bi bi-bar-chart-line-fill"></i><span class="nav-text">Resumen General</span></a>
+                <a href="#ventas"><i class="bi bi-receipt-cutoff"></i><span class="nav-text">Análisis de Ventas</span></a>
+                <a href="#rentabilidad"><i class="bi bi-cash-coin"></i><span class="nav-text">Rentabilidad (COGS)</span></a>
+                <a href="#operaciones"><i class="bi bi-gear-fill"></i><span class="nav-text">Mermas y Cancelaciones</span></a>
+                <a href="#servicios"><i class="bi bi-clock-history"></i><span class="nav-text">Análisis de Servicios</span></a>
+                <a href="#reservas"><i class="bi bi-calendar-check-fill"></i><span class="nav-text">Reservas y Clientes</span></a>
+            </div>
+        </div>
+        <div id="sidebar-bottom-container"></div>
+    </nav>
+
+    <main class="main-content">
+        <header class="main-header">
+            <h1 id="main-title">Resumen General</h1>
+            <div class="header-controls">
+                <div id="desktop-controls-wrapper"></div>
+                <button id="settingsBtn" class="button" title="Configuración y Filtros">
+                    <i class="bi bi-sliders"></i> <span class="button-text-desktop">Filtros y Opciones</span>
+                </button>
+            </div>
+        </header>
+
+        <section id="resumen" class="content-section active">
+            <div id="resumen-placeholder" class="content-block placeholder"><i class="bi bi-bar-chart-line-fill" style="font-size: 3rem; margin-bottom: 1rem;"></i><h4>Cargando datos de resumen...</h4></div>
+            <div id="resumen-content" style="display: none;">
+                <div id="kpi-resumen-container" class="grid-container kpi-grid"></div>
+                <div class="grid-container" style="grid-template-columns: 2fr 1fr; gap: 1.5rem;">
+                    <div class="content-block">
+                        <div class="chart-title-container"><h5 id="ventas-hora-title">Ventas por Hora</h5><button id="resetResumenChartBtn" class="button-secondary" style="display: none;">Reset</button></div>
+                        <div class="chart-container"><canvas id="ventasHoraChart"></canvas></div>
+                    </div>
+                    <div class="content-block">
+                        <div class="chart-title-container"><h5>Ventas por Método de Pago</h5><button id="compareMethodsBtn" class="button-secondary">Comparar</button></div>
+                        <div class="chart-container"><canvas id="ventasMetodoPagoChart"></canvas></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="ventas" class="content-section">
+            <div id="ventas-placeholder" class="content-block placeholder"><i class="bi bi-receipt-cutoff" style="font-size: 3rem; margin-bottom: 1rem;"></i><h4>Cargando datos de análisis...</h4></div>
+            <div id="ventas-content" style="display: none;">
+                <div id="kpi-ventas-container" class="grid-container kpi-grid"></div>
+                <div class="content-block">
+                    <h5>Top 5 Productos Vendidos (Unidades)</h5>
+                    <div id="top-products-container" class="grid-container" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;"></div>
+                </div>
+                <div class="grid-container" style="grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                    <div class="content-block"><h5>Top 10 Categorías (Ventas)</h5><div class="chart-container"><canvas id="ventasCategoriaChart"></canvas></div></div>
+                    <div class="content-block"><h5>Ventas por Colaborador</h5><div class="chart-container"><canvas id="ventasUsuarioChart"></canvas></div></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="rentabilidad" class="content-section">
+            <div id="rentabilidad-placeholder" class="content-block placeholder"><i class="bi bi-cash-coin" style="font-size: 3rem; margin-bottom: 1rem;"></i><h4>Cargando datos de rentabilidad...</h4></div>
+            <div id="rentabilidad-content" style="display: none;">
+                <div id="kpi-rentabilidad-container" class="grid-container kpi-grid"></div>
+                <div class="grid-container" style="grid-template-columns: 1.5fr 1fr; gap: 1.5rem;">
+                    <div class="content-block"><h5>Costo vs. Venta por Categoría</h5><div class="chart-container"><canvas id="costoVentaCategoriaChart"></canvas></div></div>
+                    <div class="content-block"><h5>Productos Menos Rentables (% Margen)</h5><div id="productos-rentabilidad-container"></div></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="operaciones" class="content-section">
+            <div id="operaciones-placeholder" class="content-block placeholder" style="display: flex; flex-direction: column; gap: 1.5rem; text-align: left;">
+                <div class="grid-container kpi-grid">
+                    <div class="content-block skeleton skeleton-kpi"></div>
+                    <div class="content-block skeleton skeleton-kpi"></div>
+                    <div class="content-block skeleton skeleton-kpi"></div>
+                </div>
+                <div class="grid-container" style="grid-template-columns: 1.5fr 1fr; gap: 1.5rem;">
+                    <div class="content-block skeleton">
+                        <div class="skeleton skeleton-text" style="width: 60%; height: 20px; margin-bottom: 1.5rem;"></div>
+                        <div class="skeleton skeleton-chart" style="height: 250px;"></div>
+                        <div class="skeleton skeleton-text" style="width: 80%; height: 20px; margin-top: 2rem; margin-bottom: 1.5rem;"></div>
+                        <div class="skeleton skeleton-table-row"></div>
+                        <div class="skeleton skeleton-table-row"></div>
+                        <div class="skeleton skeleton-table-row"></div>
+                    </div>
+                    <div class="content-block skeleton">
+                         <div class="skeleton skeleton-text" style="width: 70%; height: 20px; margin-bottom: 1rem;"></div>
+                         <div class="skeleton skeleton-text" style="width: 50%; height: 16px; margin-bottom: 1.5rem;"></div>
+                         <div class="skeleton skeleton-chart" style="height: 150px;"></div>
+                         <div class="skeleton skeleton-text" style="width: 30%; height: 16px; margin-top: 2rem; margin-bottom: 1.5rem;"></div>
+                         <div class="skeleton skeleton-chart" style="height: 150px;"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="operaciones-content" style="display: none;">
+                <div id="kpi-operaciones-container" class="grid-container kpi-grid"></div>
+                <div class="grid-container" style="grid-template-columns: 1.5fr 1fr; gap: 1.5rem;">
+                    <div class="content-block">
+                        <div class="chart-title-container"><h5>Detalle de Mermas</h5><button id="resetMermasFilterBtn" class="button-secondary" style="display: none;">Reset Filtro</button></div>
+                        <div class="chart-container"><canvas id="mermasMotivoChart"></canvas></div>
+                        <h5 style="margin-top: 1.5rem;" id="mermas-table-title">Top Productos en Merma (Total)</h5>
+                        <div id="mermas-table-container"></div>
+                    </div>
+                    <div class="content-block">
+                        <h5><b>Análisis por Camarero</b></h5>
+                        <h7>Cancelaciones</h7>
+                        <div class="chart-container"><canvas id="cancelacionesUsuarioChart"></canvas></div>
+                        <h7>Mermas</h7>
+                        <div class="chart-container" style="margin-top: 1.5rem;"><canvas id="mermasUsuarioChart"></canvas></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="servicios" class="content-section">
+            <div id="servicios-placeholder" class="content-block placeholder"><i class="bi bi-clock-history" style="font-size: 3rem; margin-bottom: 1rem;"></i><h4>Cargando datos de servicios...</h4></div>
+            <div id="servicios-content" style="display: none;">
+                <div id="kpi-servicios-container" class="grid-container kpi-grid"></div>
+                <div class="grid-container" style="grid-template-columns: repeat(3, 1fr); gap: 1.5rem;">
+                    <div class="content-block"><h5>Ventas por Zona del Restaurante</h5><div class="chart-container"><canvas id="ventasPorZonaChart"></canvas></div><div id="ventasPorZonaNoData" class="placeholder" style="display: none; min-height: 200px; justify-content: center; align-items: center;"><h6>No hay desglose por zona.</h6></div></div>
+                    <div class="content-block"><h5>Gasto Promedio (€) por Comensal por Zona</h5><div class="chart-container"><canvas id="gastoComensalZonaChart"></canvas></div><div id="gastoComensalZonaNoData" class="placeholder" style="display: none; min-height: 200px; justify-content: center; align-items: center;"><h6>No hay desglose por zona.</h6></div></div>
+                    <div class="content-block"><h5>Total Comensales por Zona</h5><div class="chart-container"><canvas id="comensalesPorZonaChart"></canvas></div><div id="comensalesPorZonaNoData" class="placeholder" style="display: none; min-height: 200px; justify-content: center; align-items: center;"><h6>No hay desglose por zona.</h6></div></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="reservas" class="content-section">
+            <div class="content-block placeholder"><i class="bi bi-calendar-check-fill" style="font-size: 3rem; margin-bottom: 1rem;"></i><h4>Datos de Reservas No Disponibles</h4></div>
+        </section>
+    </main>
+
+    <div id="comparison-modal" class="modal-overlay" style="display: none;"><div class="modal-content"><button id="closeModalBtn" class="modal-close">&times;</button><h5>Comparativa de Métodos de Pago por Hora</h5><div class="chart-container" style="height: calc(100% - 4rem);"><canvas id="paymentMethodByHourChart"></canvas></div></div></div>
+    <div id="category-detail-modal" class="modal-overlay" style="display: none;"><div class="modal-content"><button id="closeCategoryModalBtn" class="modal-close">&times;</button><h5 id="category-modal-title">Top Productos</h5><div id="category-modal-content" style="max-height: 600px; overflow-y: auto;"></div></div></div>
+    <div id="service-detail-modal" class="modal-overlay" style="display: none;"><div class="modal-content"><div class="modal-header"><h5 id="service-modal-title">Detalle de Servicios</h5><button id="serviceModalBackBtn" class="button-secondary" style="display: none;"><i class="bi bi-arrow-left"></i> Volver</button></div><button id="closeServiceModalBtn" class="modal-close">&times;</button><div id="service-modal-content"></div></div></div>
+    <div id="settings-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content settings-modal-content">
+            <button id="closeSettingsModalBtn" class="modal-close">&times;</button>
+            <h5>Configuración y Filtros</h5>
+            <div id="modal-controls-container"></div>
+            <button id="applySettingsBtn" class="button">Aplicar y Ver</button>
+        </div>
+    </div>
+    
+    <template id="controls-template">
+        <select id="localSelector" class="form-control"><option value="all">Todos los locales</option></select>
+        <select id="comparisonSelector" class="form-control"><option value="none">Sin Comparación</option><option value="previous">vs Periodo Anterior</option><option value="last_year">vs Mismo periodo, año anterior</option></select>
+        <input type="date" id="dateFrom" class="form-control">
+        <input type="date" id="dateTo" class="form-control">
+        <button id="refreshDataBtn" class="button" title="Limpiar caché y recargar"><i class="bi bi-arrow-clockwise"></i></button>
+    </template>
+    <template id="theme-switcher-template">
+        <div class="theme-switcher" id="theme-switcher"><i class="bi bi-sun-fill"></i><span id="theme-text">Modo Claro</span></div>
+    </template>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/localforage@1.10.0/dist/localforage.min.js"></script>
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>

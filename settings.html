@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuración | DataRest</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+        :root { 
+            --bg-color: #f0f2f5; 
+            --surface-color: #ffffff; 
+            --border-color: #dee2e6;
+            --sidebar-bg: #1f2937;
+            --sidebar-link: #9ca3af;
+            --sidebar-link-hover: #ffffff;
+            --sidebar-link-active-bg: #374151;
+            --text-primary: #212529; 
+            --text-secondary: #6c757d; 
+            --accent-primary: #007bff;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: var(--bg-color); 
+            color: var(--text-primary); 
+        }
+
+        /* --- LAYOUT CON SIDEBAR --- */
+        .layout-container {
+            display: flex;
+        }
+        .sidebar {
+            width: 260px;
+            background-color: var(--sidebar-bg);
+            color: var(--sidebar-link);
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            z-index: 1001;
+        }
+        .sidebar .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--sidebar-link-hover);
+            margin-bottom: 2.5rem;
+            text-align: center;
+        }
+        .sidebar .logo i { color: var(--accent-primary); }
+        .sidebar .nav-menu {
+            flex-grow: 1;
+            list-style: none;
+            padding: 0;
+        }
+        .sidebar .nav-menu a {
+            display: flex;
+            align-items: center;
+            padding: 0.9rem 1rem;
+            color: var(--sidebar-link);
+            text-decoration: none;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            transition: background-color 0.2s, color 0.2s;
+        }
+        .sidebar .nav-menu a:hover {
+            background-color: var(--sidebar-link-active-bg);
+            color: var(--sidebar-link-hover);
+        }
+        .sidebar .nav-menu a.active {
+            background-color: var(--sidebar-link-active-bg);
+            color: var(--sidebar-link-hover);
+            font-weight: 600;
+        }
+        .sidebar .nav-menu i { margin-right: 1rem; font-size: 1.2rem; }
+        .sidebar .logout-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.9rem 1rem;
+            color: var(--sidebar-link);
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            border: 1px solid var(--sidebar-link);
+            transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+        }
+        .sidebar .logout-button:hover {
+             background-color: #dc3545;
+             border-color: #dc3545;
+             color: var(--sidebar-link-hover);
+        }
+        .sidebar .logout-button i { margin-right: 0.5rem; }
+
+        .main-content {
+            margin-left: 260px;
+            width: calc(100% - 260px);
+            padding: 2rem;
+        }
+        
+        /* --- ESTILOS DE CONTENIDO --- */
+        .content-block { background-color: var(--surface-color); padding: 2rem; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+        .input-group { margin-bottom: 1.5rem; }
+        label { display: block; font-weight: 500; margin-bottom: 0.5rem; }
+        input { width: 100%; padding: 0.8rem; border: 1px solid var(--border-color); border-radius: 8px; font-size: 1rem; }
+        .button { padding: 0.8rem 1.5rem; border: none; background-color: var(--accent-primary); color: #fff; border-radius: 8px; font-weight: 600; cursor: pointer; }
+        #saveMessage { margin-top: 1rem; color: var(--text-secondary); font-weight: 500; }
+    </style>
+</head>
+<body>
+    <div class="layout-container">
+        <nav class="sidebar">
+            <div>
+                <div class="logo"><i class="bi bi-shield-lock-fill"></i> Admin</div>
+                <ul class="nav-menu">
+                    <li><a href="dashboard_final.html"><i class="bi bi-bar-chart-line-fill"></i>Dashboard</a></li>
+                    <li><a href="admin.html"><i class="bi bi-people-fill"></i>Gestión de Usuarios</a></li>
+                    <li><a href="settings.html" class="active"><i class="bi bi-gear-fill"></i>Configuración</a></li>
+                </ul>
+            </div>
+            <button class="logout-button" id="logoutButton">
+                <i class="bi bi-box-arrow-left"></i>
+                <span>Cerrar Sesión</span>
+            </button>
+        </nav>
+
+        <main class="main-content">
+            <h1><i class="bi bi-gear-fill"></i> Configuración de Conexión</h1>
+            <div class="content-block">
+                <form id="settingsForm">
+                    <div class="input-group">
+                        <label for="apiUrl">URL Base de la API</label>
+                        <input type="text" id="apiUrl" placeholder="http://localhost:3000/api" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="apiToken">API Token (Opcional)</label>
+                        <input type="text" id="apiToken" placeholder="Pega aquí un token estático si tu API lo requiere">
+                    </div>
+                    <button type="submit" class="button">Guardar Configuración</button>
+                    <p id="saveMessage"></p>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const settingsForm = document.getElementById('settingsForm');
+            const apiUrlInput = document.getElementById('apiUrl');
+            const apiTokenInput = document.getElementById('apiToken');
+            const saveMessage = document.getElementById('saveMessage');
+            const logoutButton = document.getElementById('logoutButton');
+
+            // Al cargar, muestra la configuración guardada en los campos
+            const savedApiUrl = localStorage.getItem('apiBaseUrl');
+            const savedApiToken = localStorage.getItem('staticApiToken');
+            if (savedApiUrl) {
+                apiUrlInput.value = savedApiUrl;
+            }
+            if (savedApiToken) {
+                apiTokenInput.value = savedApiToken;
+            }
+
+            // Lógica para guardar la configuración
+            settingsForm.addEventListener('submit', (event) => {
+                event.preventDefault();
+                const newApiUrl = apiUrlInput.value.trim();
+                const newApiToken = apiTokenInput.value.trim();
+
+                // Guarda los nuevos valores en el almacenamiento del navegador
+                localStorage.setItem('apiBaseUrl', newApiUrl);
+                
+                // Guarda el token estático solo si no está vacío, si no, lo borra
+                if (newApiToken) {
+                    localStorage.setItem('staticApiToken', newApiToken);
+                } else {
+                    localStorage.removeItem('staticApiToken');
+                }
+                
+                saveMessage.textContent = '¡Configuración guardada con éxito!';
+                setTimeout(() => { saveMessage.textContent = ''; }, 3000);
+            });
+            
+            // Lógica para cerrar sesión
+            logoutButton.addEventListener('click', () => {
+                localStorage.removeItem('authToken');
+                // Opcional: decidir si se borra o no la configuración al cerrar sesión
+                // localStorage.removeItem('apiBaseUrl'); 
+                // localStorage.removeItem('staticApiToken');
+                window.location.href = 'login.html';
+            });
+        });
+    </script>
+</body>
+</html>
